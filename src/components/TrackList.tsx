@@ -20,7 +20,7 @@ const TrackList = ({ title, tracks }: TrackListProps) => {
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
         {tracks.map((track) => (
           <div key={track.id} className="track-card group">
-            <div className="relative mb-2 md:mb-3">
+            <div className="relative mb-3 md:mb-4">
               <img 
                 src={track.coverArt} 
                 alt={track.title} 
@@ -33,8 +33,8 @@ const TrackList = ({ title, tracks }: TrackListProps) => {
                 <Plus size={16} />
               </button>
             </div>
-            <h3 className="text-sm font-medium text-white truncate">{track.title}</h3>
-            <p className="text-xs text-gray-400 truncate">{track.artist}</p>
+            <h3 className="text-sm font-medium text-white truncate leading-tight">{track.title}</h3>
+            <p className="text-xs text-gray-400 truncate leading-tight mb-1">{track.artist}</p>
           </div>
         ))}
       </div>

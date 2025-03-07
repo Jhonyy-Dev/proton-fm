@@ -147,7 +147,7 @@ const Index = () => {
       
       {/* Main content area */}
       <div className="flex flex-col flex-1 overflow-hidden w-full">
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto pb-28 md:pb-32">
           <ArtistHeader 
             name="Steve Aoki" 
             image="/lovable-uploads/6535285e-5eec-40af-ba8f-0e9bbfca9742.png"
@@ -158,7 +158,7 @@ const Index = () => {
           <div className="bg-gradient-to-b from-app-darker to-app-darkest py-4 px-4 md:px-6">
             <TrackList title="Latest tracks" tracks={tracks} />
             
-            <div className="mt-4">
+            <div className="mt-4 mb-24">
               <TrackList title="Popular Releases" tracks={tracks} />
             </div>
           </div>

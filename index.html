@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Proton FM | Online Radio Experience</title>
+    <meta name="description" content="Enjoy the best music streaming experience with Proton FM. Listen to your favorite radio stations and discover new music." />
+    <meta name="author" content="Lovable" />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:title" content="Proton FM | Online Radio Experience" />
+    <meta property="og:description" content="Enjoy the best music streaming experience with Proton FM." />
+    <meta property="og:url" content="https://proton-fm.vercel.app/" />
+    <meta property="og:type" content="website" />
+    
+    <!-- Basic styling to prevent flash of unstyled content -->
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background-color: #121212;
+        color: #ffffff;
+        min-height: 100vh;
+      }
+      #root {
+        min-height: 100vh;
+      }
+      .loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: #121212;
+        z-index: 999;
+        transition: opacity 0.3s ease;
+      }
+      .loading.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        border-top-color: #1DB954;
+        animation: spin 1s ease-in-out infinite;
+      }
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Simple loading indicator -->
+    <div class="loading" id="loading-screen">
+      <div class="loading-spinner"></div>
+    </div>
+    
+    <div id="root"></div>
+    
+    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
+    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+    <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Hide loading screen when content is loaded -->
+    <script>
+      window.addEventListener('load', function() {
+        document.getElementById('loading-screen').classList.add('hidden');
+      });
+    </script>
+  </body>
+</html>

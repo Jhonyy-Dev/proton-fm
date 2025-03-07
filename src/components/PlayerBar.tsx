@@ -1,39 +1,60 @@
-
-import { Play, Pause, SkipBack, SkipForward, Volume2, Maximize2, List, Heart, Plus } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Maximize2, List, Heart, Plus } from 'lucide-react';
 import { Slider } from '@/components/ui/slider';
 import { useRadio } from '@/contexts/RadioContext';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 
-const PlayerBar = () => {
+interface PlayerBarProps {
+  onNowPlayingToggle?: () => void;
+  nowPlayingOpen?: boolean;
+}
+
+const PlayerBar = ({ onNowPlayingToggle, nowPlayingOpen }: PlayerBarProps) => {
   const { 
     currentStation, 
     isPlaying, 
     isLoading, 
     togglePlayPause, 
     stations, 
-    playStation 
+    playStation,
+    volume: contextVolume,
+    setAudioVolume
   } = useRadio();
-  const [volume, setVolume] = useState([70]);
+  
+  const [localVolume, setLocalVolume] = useState([contextVolume]);
+  const [isMuted, setIsMuted] = useState(false);
+  const [prevVolume, setPrevVolume] = useState(contextVolume);
+  
+  // Update local volume when context volume changes
+  useEffect(() => {
+    setLocalVolume([contextVolume]);
+  }, [contextVolume]);
   
   // Function to handle volume change
   const handleVolumeChange = (newVolume: number[]) => {
-    setVolume(newVolume);
-    // Get the audio element
-    const audioElement = document.querySelector('audio');
-    if (audioElement) {
-      // Set volume (0-1 range)
-      audioElement.volume = newVolume[0] / 100;
-    }
+    setLocalVolume(newVolume);
+    setPrevVolume(newVolume[0]);
+    setIsMuted(newVolume[0] === 0);
+    
+    // Use the context's setAudioVolume function
+    setAudioVolume(newVolume[0]);
   };
 
-  // Set initial volume on mount
-  useEffect(() => {
-    const audioElement = document.querySelector('audio');
-    if (audioElement) {
-      audioElement.volume = volume[0] / 100;
+  // Toggle mute function
+  const toggleMute = () => {
+    if (isMuted) {
+      // Unmute - restore previous volume
+      setLocalVolume([prevVolume]);
+      setIsMuted(false);
+      setAudioVolume(prevVolume);
+    } else {
+      // Mute - set volume to 0
+      setPrevVolume(localVolume[0]);
+      setLocalVolume([0]);
+      setIsMuted(true);
+      setAudioVolume(0);
     }
-  }, []);
+  };
 
   const handleSkipNext = () => {
     if (!currentStation || stations.length === 0) return;
@@ -82,21 +103,57 @@ const PlayerBar = () => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 h-20 bg-app-dark border-t border-app-light/20 flex items-center justify-between px-4 py-2 animate-slide-in-bottom z-50">
-      <div className="w-1/3 flex items-center">
+    <div className="fixed bottom-0 left-0 right-0 h-auto md:h-20 bg-app-dark border-t border-app-light/20 flex flex-col md:flex-row items-center justify-between px-3 md:px-4 py-2 animate-slide-in-bottom z-50">
+      {/* Mobile layout - top row with controls */}
+      <div className="w-full md:hidden flex items-center justify-between mb-2">
+        <button 
+          className="text-gray-400 hover:text-white transition-colors"
+          onClick={handleSkipPrevious}
+          disabled={isLoading || stations.length <= 1}
+        >
+          <SkipBack size={18} />
+        </button>
+        
+        <Button 
+          className="bg-white rounded-full w-8 h-8 flex items-center justify-center p-0 mx-2"
+          onClick={handlePlayButtonClick}
+          disabled={isLoading}
+          variant="default"
+          size="icon"
+        >
+          {isLoading ? (
+            <span className="w-4 h-4 border-2 border-app-accent border-t-transparent rounded-full animate-spin"></span>
+          ) : isPlaying ? (
+            <Pause size={14} className="text-black" />
+          ) : (
+            <Play size={14} className="text-black ml-0.5" />
+          )}
+        </Button>
+        
+        <button 
+          className="text-gray-400 hover:text-white transition-colors"
+          onClick={handleSkipNext}
+          disabled={isLoading || stations.length <= 1}
+        >
+          <SkipForward size={18} />
+        </button>
+      </div>
+      
+      {/* Station info - responsive for all screens */}
+      <div className="w-full md:w-1/3 flex items-center">
         <img 
           src={getGenreImage()} 
           alt={currentStation?.name || "Radio player"} 
-          className="w-12 h-12 object-cover rounded mr-3"
+          className="w-10 h-10 md:w-12 md:h-12 object-cover rounded mr-3"
           onError={(e) => {
             (e.target as HTMLImageElement).src = "/lovable-uploads/88cccc36-9139-4f33-8d9f-f3006bf4526e.png";
           }}
         />
-        <div className="flex-1">
-          <h4 className="text-sm text-white font-medium">
+        <div className="flex-1 min-w-0">
+          <h4 className="text-sm text-white font-medium truncate">
             {currentStation?.name || "Radio Player"}
           </h4>
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-gray-400 truncate">
             {currentStation?.genre || "Select a station to play"}
           </p>
         </div>
@@ -104,13 +161,14 @@ const PlayerBar = () => {
           <button className="text-gray-400 hover:text-white transition-colors">
             <Heart size={16} />
           </button>
-          <button className="text-gray-400 hover:text-white transition-colors">
+          <button className="text-gray-400 hover:text-white transition-colors md:hidden">
             <Plus size={16} />
           </button>
         </div>
       </div>
       
-      <div className="flex flex-col items-center justify-center">
+      {/* Desktop controls - hidden on mobile */}
+      <div className="hidden md:flex flex-col items-center justify-center">
         <div className="flex items-center justify-center gap-6 mb-2">
           <button 
             className="text-gray-400 hover:text-white transition-colors"
@@ -152,22 +210,41 @@ const PlayerBar = () => {
         </div>
       </div>
       
-      <div className="w-1/3 flex items-center justify-end gap-4">
-        <div className="flex items-center gap-3">
-          <button className="text-gray-400 hover:text-white transition-colors">
+      {/* Progress bar for mobile */}
+      <div className="w-full md:hidden h-1 bg-gray-700 rounded-full overflow-hidden my-1">
+        <div className={`h-full ${isPlaying ? 'bg-app-red animate-pulse' : 'bg-gray-500'} w-full rounded-full`}></div>
+      </div>
+      
+      {/* Volume and controls - responsive */}
+      <div className="w-full md:w-1/3 flex items-center justify-end gap-2 md:gap-4">
+        <div className="flex items-center gap-2 md:gap-3">
+          {/* Now Playing toggle button for mobile */}
+          <button 
+            className={`text-gray-400 hover:text-white transition-colors ${nowPlayingOpen ? 'text-white' : ''}`}
+            onClick={onNowPlayingToggle}
+          >
             <List size={18} />
           </button>
-          <div className="flex items-center gap-2 w-24">
-            <Volume2 size={18} className="text-gray-400" />
+          
+          {/* Volume control */}
+          <div className="flex items-center gap-2 w-24 md:w-32">
+            <button 
+              onClick={toggleMute}
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+            </button>
             <Slider 
-              value={volume}
+              value={localVolume}
               onValueChange={handleVolumeChange}
               max={100} 
               step={1}
-              className="h-1"
+              className="cursor-pointer"
             />
           </div>
-          <button className="text-gray-400 hover:text-white transition-colors">
+          
+          {/* Fullscreen button - hidden on small screens */}
+          <button className="hidden md:block text-gray-400 hover:text-white transition-colors">
             <Maximize2 size={18} />
           </button>
         </div>

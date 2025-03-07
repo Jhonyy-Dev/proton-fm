@@ -1,13 +1,13 @@
-
-import { Home, Search, Radio, User, Calendar, Newspaper, ShoppingBag, Smartphone, Menu, Heart } from "lucide-react";
+import { Home, Search, Radio, User, Calendar, Newspaper, ShoppingBag, Smartphone, Menu, Heart, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 interface SidebarProps {
   className?: string;
+  onClose?: () => void;
 }
 
-const Sidebar = ({ className }: SidebarProps) => {
+const Sidebar = ({ className, onClose }: SidebarProps) => {
   const location = useLocation();
   
   return (
@@ -18,6 +18,15 @@ const Sidebar = ({ className }: SidebarProps) => {
           <span className="font-bold text-lg text-white">PARADZIT</span>
         </div>
         <div className="flex items-center space-x-1">
+          {onClose && (
+            <button 
+              className="lg:hidden p-1 rounded-full text-gray-400 hover:text-white"
+              onClick={onClose}
+              aria-label="Close sidebar"
+            >
+              <X size={18} />
+            </button>
+          )}
           <button className="p-1 rounded-full text-gray-400 hover:text-white">
             <Menu size={18} />
           </button>
@@ -35,7 +44,7 @@ const Sidebar = ({ className }: SidebarProps) => {
         </div>
       </div>
 
-      <div className="px-2 py-1">
+      <div className="px-2 py-1 overflow-y-auto">
         <nav className="space-y-1">
           <Link to="/" className={`sidebar-link ${location.pathname === '/' ? 'active' : ''}`}>
             <Home size={20} />
@@ -75,13 +84,13 @@ const Sidebar = ({ className }: SidebarProps) => {
       <div className="mt-auto px-3 py-4 border-t border-app-light/10">
         <div className="flex items-center gap-2 mb-2">
           <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-xs font-medium text-white">T</div>
-          <div className="text-sm text-white">Break Through The Silence</div>
+          <div className="text-sm text-white truncate">Break Through The Silence</div>
         </div>
         <div className="flex items-center gap-2">
           <button className="p-1 text-gray-400 hover:text-white">
             <Heart size={16} />
           </button>
-          <div className="text-xs text-gray-400">Martin Garrix and Matisse & Sadko</div>
+          <div className="text-xs text-gray-400 truncate">Martin Garrix and Matisse & Sadko</div>
         </div>
       </div>
     </div>

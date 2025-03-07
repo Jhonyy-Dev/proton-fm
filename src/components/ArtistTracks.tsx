@@ -1,11 +1,26 @@
+import { Play, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
-import { Play } from 'lucide-react';
+interface ArtistTracksProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
 
-const ArtistTracks = () => {
+const ArtistTracks = ({ isOpen, onClose }: ArtistTracksProps) => {
   return (
-    <div className="w-72 h-screen bg-app-darkest border-l border-app-light/10 flex flex-col animate-fade-in overflow-hidden pb-20">
-      <div className="p-4 border-b border-app-light/10">
+    <div className={`w-full lg:w-72 h-screen bg-app-darkest border-l border-app-light/10 flex flex-col animate-fade-in overflow-hidden pb-20 ${isOpen ? 'fixed inset-0 z-50' : ''}`}>
+      <div className="p-4 border-b border-app-light/10 flex justify-between items-center">
         <h2 className="text-white font-medium">Artist Tracks</h2>
+        {onClose && (
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="lg:hidden text-gray-400 hover:text-white hover:bg-app-dark"
+            onClick={onClose}
+          >
+            <X size={18} />
+          </Button>
+        )}
       </div>
       
       <div className="flex-1 overflow-y-auto">

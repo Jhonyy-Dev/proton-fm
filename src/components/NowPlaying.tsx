@@ -1,5 +1,4 @@
-
-import { Check, ChevronDown, Plus } from 'lucide-react';
+import { Check, ChevronDown, Plus, X } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 
 interface PlaylistTrack {
@@ -12,9 +11,10 @@ interface PlaylistTrack {
 
 interface NowPlayingProps {
   playlist: PlaylistTrack[];
+  onClose?: () => void;
 }
 
-const NowPlaying = ({ playlist }: NowPlayingProps) => {
+const NowPlaying = ({ playlist, onClose }: NowPlayingProps) => {
   const location = useLocation();
   const isNewsPage = location.pathname === '/news';
 
@@ -24,12 +24,21 @@ const NowPlaying = ({ playlist }: NowPlayingProps) => {
   }
 
   return (
-    <div className="w-72 lg:w-72 md:w-64 sm:w-56 xs:w-48 h-screen bg-app-darkest border-l border-app-light/10 flex flex-col animate-fade-in pb-20">
+    <div className="w-full sm:w-72 md:w-72 h-screen bg-app-darkest flex flex-col animate-fade-in pb-20">
       <div className="p-4 flex justify-between items-center border-b border-app-light/10">
         <div className="flex items-center gap-2">
           <span className="text-white font-semibold">Top</span>
           <ChevronDown size={16} className="text-gray-400" />
         </div>
+        {onClose && (
+          <button 
+            className="lg:hidden p-1 rounded-full text-gray-400 hover:text-white"
+            onClick={onClose}
+            aria-label="Close now playing"
+          >
+            <X size={18} />
+          </button>
+        )}
       </div>
       
       <div className="flex-1 overflow-y-auto">

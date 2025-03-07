@@ -1,13 +1,15 @@
-
 import { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import ArtistHeader from '@/components/ArtistHeader';
 import TrackList from '@/components/TrackList';
 import PlayerBar from '@/components/PlayerBar';
 import NowPlaying from '@/components/NowPlaying';
+import { Menu } from 'lucide-react';
 
 const Index = () => {
   const [loading, setLoading] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [nowPlayingOpen, setNowPlayingOpen] = useState(false);
 
   useEffect(() => {
     // Simulate loading
@@ -15,6 +17,24 @@ const Index = () => {
       setLoading(false);
     }, 500);
     return () => clearTimeout(timer);
+  }, []);
+
+  // Close sidebar when clicking outside on mobile
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const sidebar = document.getElementById('sidebar');
+      const sidebarToggle = document.getElementById('sidebar-toggle');
+      
+      if (sidebar && !sidebar.contains(event.target as Node) && 
+          sidebarToggle && !sidebarToggle.contains(event.target as Node)) {
+        setSidebarOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   const tracks = [
@@ -105,10 +125,28 @@ const Index = () => {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-app-darker">
-      <Sidebar />
+    <div className="flex h-screen overflow-hidden bg-app-darker relative">
+      {/* Mobile sidebar toggle */}
+      <button 
+        id="sidebar-toggle"
+        className="lg:hidden fixed top-4 left-4 z-50 bg-app-dark p-2 rounded-full shadow-lg"
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+      >
+        <Menu className="h-5 w-5 text-white" />
+      </button>
       
-      <div className="flex flex-col flex-1 overflow-hidden">
+      {/* Sidebar with responsive behavior */}
+      <div 
+        id="sidebar"
+        className={`${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } lg:translate-x-0 fixed inset-y-0 left-0 z-40 transition-transform duration-300 ease-in-out lg:relative lg:z-0`}
+      >
+        <Sidebar onClose={() => setSidebarOpen(false)} />
+      </div>
+      
+      {/* Main content area */}
+      <div className="flex flex-col flex-1 overflow-hidden w-full">
         <div className="flex-1 overflow-y-auto">
           <ArtistHeader 
             name="Steve Aoki" 
@@ -117,7 +155,7 @@ const Index = () => {
             verified={true}
           />
           
-          <div className="bg-gradient-to-b from-app-darker to-app-darkest py-4">
+          <div className="bg-gradient-to-b from-app-darker to-app-darkest py-4 px-4 md:px-6">
             <TrackList title="Latest tracks" tracks={tracks} />
             
             <div className="mt-4">
@@ -126,10 +164,20 @@ const Index = () => {
           </div>
         </div>
         
-        <PlayerBar />
+        <PlayerBar 
+          onNowPlayingToggle={() => setNowPlayingOpen(!nowPlayingOpen)} 
+          nowPlayingOpen={nowPlayingOpen}
+        />
       </div>
       
-      <NowPlaying playlist={nowPlaying} />
+      {/* Now Playing with responsive behavior */}
+      <div 
+        className={`${
+          nowPlayingOpen ? 'translate-x-0' : 'translate-x-full'
+        } lg:translate-x-0 fixed inset-y-0 right-0 z-40 transition-transform duration-300 ease-in-out lg:relative lg:z-0`}
+      >
+        <NowPlaying playlist={nowPlaying} onClose={() => setNowPlayingOpen(false)} />
+      </div>
     </div>
   );
 };

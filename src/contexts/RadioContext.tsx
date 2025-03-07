@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, ReactNode, useEffect } from 'react';
 import useRadioPlayer, { RadioStation } from '@/hooks/useRadioPlayer';
 
@@ -7,11 +6,13 @@ interface RadioContextType {
   currentStation: RadioStation | null;
   isPlaying: boolean;
   isLoading: boolean;
+  volume: number;
   fetchRadioStations: (limit?: number) => Promise<RadioStation[]>;
   playStation: (station: RadioStation) => void;
   togglePlayPause: () => void;
   stopPlayback: () => void;
-  setCurrentStation: (station: RadioStation) => void; // Add this line
+  setCurrentStation: (station: RadioStation) => void;
+  setAudioVolume: (volume: number) => void;
 }
 
 const RadioContext = createContext<RadioContextType | undefined>(undefined);

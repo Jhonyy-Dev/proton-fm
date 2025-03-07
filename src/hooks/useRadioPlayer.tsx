@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -21,15 +20,6 @@ const DEFAULT_STATIONS: RadioStation[] = [
     favicon: '/lovable-uploads/88cccc36-9139-4f33-8d9f-f3006bf4526e.png',
     genre: 'Electronic',
     country: 'Global',
-    language: 'English'
-  },
-  {
-    id: '2',
-    name: 'Ibiza Dance',
-    url: 'https://strm112.1.fm/ibizadance_mobile_mp3',
-    favicon: '/lovable-uploads/88cccc36-9139-4f33-8d9f-f3006bf4526e.png',
-    genre: 'Electronic',
-    country: 'Spain',
     language: 'English'
   },
   {
@@ -84,6 +74,7 @@ const useRadioPlayer = () => {
   const [currentStation, setCurrentStation] = useState<RadioStation | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [volume, setVolume] = useState(70); // Add volume state
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { toast } = useToast();
 
@@ -96,6 +87,9 @@ const useRadioPlayer = () => {
       
       // Set audio attributes for better streaming
       audio.preload = "auto";
+      
+      // Set initial volume
+      audio.volume = volume / 100;
       
       // Clear event listeners to prevent memory leaks
       const clearListeners = () => {
@@ -284,16 +278,32 @@ const useRadioPlayer = () => {
     setIsPlaying(false);
   };
 
+  // Add volume control function
+  const setAudioVolume = (newVolume: number) => {
+    if (!audioRef.current) return;
+    
+    // Ensure volume is between 0 and 100
+    const clampedVolume = Math.max(0, Math.min(100, newVolume));
+    
+    // Update audio element volume (range 0-1)
+    audioRef.current.volume = clampedVolume / 100;
+    
+    // Update volume state
+    setVolume(clampedVolume);
+  };
+
   return {
     stations,
     currentStation,
     isPlaying,
     isLoading,
+    volume,
     fetchRadioStations,
     playStation,
     togglePlayPause,
     stopPlayback,
-    setCurrentStation, // Expose this function to allow RadioContext to set the current station
+    setCurrentStation,
+    setAudioVolume, // Expose volume control function
   };
 };
 

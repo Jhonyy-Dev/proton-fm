@@ -23,6 +23,15 @@ const DEFAULT_STATIONS: RadioStation[] = [
     language: 'English'
   },
   {
+    id: '2',
+    name: 'Techno & Trance',
+    url: 'https://strm112.1.fm/trance_mobile_mp3',
+    favicon: '/lovable-uploads/88cccc36-9139-4f33-8d9f-f3006bf4526e.png',
+    genre: 'Electronic',
+    country: 'Global',
+    language: 'English'
+  },
+  {
     id: '3',
     name: 'EDM & Electronica',
     url: 'https://strm112.1.fm/electronica_mobile_mp3',
@@ -33,6 +42,15 @@ const DEFAULT_STATIONS: RadioStation[] = [
   },
   {
     id: '4',
+    name: 'Club & Dance Hits',
+    url: 'https://strm112.1.fm/club_mobile_mp3',
+    favicon: '/lovable-uploads/88cccc36-9139-4f33-8d9f-f3006bf4526e.png',
+    genre: 'Electronic',
+    country: 'Global',
+    language: 'English'
+  },
+  {
+    id: '5',
     name: 'Reggaeton',
     url: 'https://strm112.1.fm/reggaeton_mobile_mp3',
     favicon: '/lovable-uploads/88cccc36-9139-4f33-8d9f-f3006bf4526e.png',
@@ -41,7 +59,7 @@ const DEFAULT_STATIONS: RadioStation[] = [
     language: 'Spanish'
   },
   {
-    id: '5',
+    id: '6',  
     name: 'Salsa',
     url: 'https://strm112.1.fm/spanisholdies_mobile_mp3',
     favicon: '/lovable-uploads/88cccc36-9139-4f33-8d9f-f3006bf4526e.png',
@@ -50,7 +68,7 @@ const DEFAULT_STATIONS: RadioStation[] = [
     language: 'Spanish'
   },
   {
-    id: '6',
+    id: '8',
     name: 'Latino Pop',
     url: 'https://strm112.1.fm/top40_mobile_mp3',
     favicon: '/lovable-uploads/88cccc36-9139-4f33-8d9f-f3006bf4526e.png',
@@ -59,14 +77,14 @@ const DEFAULT_STATIONS: RadioStation[] = [
     language: 'Spanish'
   },
   {
-    id: '7',
+    id: '9',
     name: 'Bachata',
     url: 'https://streamer.radio.co/s83eb8ff39/listen',
     favicon: '/lovable-uploads/88cccc36-9139-4f33-8d9f-f3006bf4526e.png',
     genre: 'Bachata',
     country: 'Dominican Republic',
     language: 'Spanish'
-  }
+  },
 ];
 
 const useRadioPlayer = () => {

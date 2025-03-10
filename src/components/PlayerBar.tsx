@@ -3,6 +3,7 @@ import { Slider } from '@/components/ui/slider';
 import { useRadio } from '@/contexts/RadioContext';
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 interface PlayerBarProps {
   onNowPlayingToggle?: () => void;
@@ -18,12 +19,16 @@ const PlayerBar = ({ onNowPlayingToggle, nowPlayingOpen }: PlayerBarProps) => {
     stations, 
     playStation,
     volume: contextVolume,
-    setAudioVolume
+    setAudioVolume,
+    toggleFavorite,
+    isFavorite
   } = useRadio();
   
+  const navigate = useNavigate();
   const [localVolume, setLocalVolume] = useState([contextVolume]);
   const [isMuted, setIsMuted] = useState(false);
   const [prevVolume, setPrevVolume] = useState(contextVolume);
+  const [isHeartAnimating, setIsHeartAnimating] = useState(false);
   
   // Update local volume when context volume changes
   useEffect(() => {
@@ -82,12 +87,24 @@ const PlayerBar = ({ onNowPlayingToggle, nowPlayingOpen }: PlayerBarProps) => {
   const getGenreImage = () => {
     if (!currentStation) return "/lovable-uploads/88cccc36-9139-4f33-8d9f-f3006bf4526e.png";
     
+    // Primero intentamos buscar por nombre de emisora específico
+    const stationImageMap: Record<string, string> = {
+      "Retro Music": "https://i.iheart.com/v3/re/new_assets/604b5ca11b76b4e49288f80e?ops=contain(1480,0)",
+    };
+    
+    // Si hay una imagen específica para esta emisora, la usamos
+    if (currentStation.name && stationImageMap[currentStation.name]) {
+      return stationImageMap[currentStation.name];
+    }
+    
+    // Si no, buscamos por género
     const genreImageMap: Record<string, string> = {
-      "Electronic": "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=300&h=300&auto=format",
-      "Reggaeton": "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=300&h=300&auto=format",
-      "Latin": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=300&h=300&auto=format",
-      "Latin Pop": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=300&h=300&auto=format",
-      "Bachata": "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=300&h=300&auto=format",
+      "Electronic": "https://cdn-images.dzcdn.net/images/cover/242c7a5af2e9d8f310920a7478b9b97d/0x1900-000000-80-0-0.jpg",
+      "Reggaeton": "https://lastfm.freetls.fastly.net/i/u/300x300/48e2aa75085404fcb6ae547bfc56ee63.jpg",
+      "Rock & Pop": "https://www.rollingstone.com/wp-content/uploads/2018/06/rs-178306-pop_albums_REAL.jpg",
+      "Classic Rock": "https://i.iheart.com/v3/re/new_assets/604b5ca11b76b4e49288f80e?ops=contain(1480,0)",
+      "Jazz": "https://downbeat.com/images/news/_full/DB21_12_28_Reviews_Kenny_Garrett_Lead.jpg",
+      "Música Latina": "https://f4.bcbits.com/img/a1807740989_10.jpg",
     };
     
     return genreImageMap[currentStation.genre || ""] || "/lovable-uploads/88cccc36-9139-4f33-8d9f-f3006bf4526e.png";
@@ -100,6 +117,22 @@ const PlayerBar = ({ onNowPlayingToggle, nowPlayingOpen }: PlayerBarProps) => {
     } else {
       togglePlayPause();
     }
+  };
+
+  // Función para manejar el clic en el botón de favorito
+  const handleFavoriteClick = () => {
+    if (!currentStation) return;
+    
+    // Activar la animación
+    setIsHeartAnimating(true);
+    
+    // Alternar el estado de favorito
+    toggleFavorite(currentStation.id);
+    
+    // Desactivar la animación después de que termine
+    setTimeout(() => {
+      setIsHeartAnimating(false);
+    }, 1000);
   };
 
   return (
@@ -158,8 +191,29 @@ const PlayerBar = ({ onNowPlayingToggle, nowPlayingOpen }: PlayerBarProps) => {
           </p>
         </div>
         <div className="flex items-center gap-2 ml-4">
-          <button className="text-gray-400 hover:text-white transition-colors">
-            <Heart size={16} />
+          <button 
+            className={`transition-colors relative ${
+              currentStation && isFavorite(currentStation.id) 
+                ? 'text-red-500 hover:text-red-400' 
+                : 'text-gray-400 hover:text-white'
+            }`}
+            onClick={handleFavoriteClick}
+            disabled={!currentStation}
+          >
+            <Heart 
+              size={16} 
+              fill={currentStation && isFavorite(currentStation.id) ? "currentColor" : "none"} 
+              className={`transition-transform ${isHeartAnimating ? 'animate-heartbeat' : ''}`}
+            />
+            {isHeartAnimating && (
+              <span className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <Heart 
+                  size={16} 
+                  fill="currentColor" 
+                  className="text-red-500 animate-heart-burst opacity-0"
+                />
+              </span>
+            )}
           </button>
           <button className="text-gray-400 hover:text-white transition-colors md:hidden">
             <Plus size={16} />
@@ -244,7 +298,11 @@ const PlayerBar = ({ onNowPlayingToggle, nowPlayingOpen }: PlayerBarProps) => {
           </div>
           
           {/* Fullscreen button - hidden on small screens */}
-          <button className="hidden md:block text-gray-400 hover:text-white transition-colors">
+          <button 
+            className="hidden md:block text-gray-400 hover:text-white transition-colors"
+            onClick={() => navigate('/listen')}
+            title="Abrir reproductor"
+          >
             <Maximize2 size={18} />
           </button>
         </div>

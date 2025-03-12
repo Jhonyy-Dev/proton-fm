@@ -237,21 +237,22 @@ const Listen = () => {
                 </button>
                 
                 <div className="flex-1 px-1">
-                  <Slider
-                    value={[muted ? 0 : volume]}
-                    min={0}
-                    max={100}
-                    step={1}
-                    onValueChange={(value) => {
-                      const newVolume = value[0];
-                      setAudioVolume(newVolume);
-                      if (muted && newVolume > 0) {
-                        setMuted(false);
-                      }
-                    }}
-                    className="cursor-pointer touch-action-manipulation"
-                    aria-label="Volume control"
-                  />
+                  <div className="cursor-pointer touch-action-manipulation">
+                    <Slider
+                      value={[muted ? 0 : volume]}
+                      min={0}
+                      max={100}
+                      step={1}
+                      onValueChange={(value) => {
+                        const newVolume = value[0];
+                        setAudioVolume(newVolume);
+                        if (muted && newVolume > 0) {
+                          setMuted(false);
+                        }
+                      }}
+                      aria-label="Volume control"
+                    />
+                  </div>
                 </div>
                 
                 <div className="w-9 text-right text-sm text-gray-400 font-medium">

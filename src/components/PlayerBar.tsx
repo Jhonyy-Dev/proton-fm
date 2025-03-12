@@ -1,5 +1,4 @@
 import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Maximize2, List, Heart, Plus } from 'lucide-react';
-import { Slider } from '@/components/ui/slider';
 import { useRadio } from '@/contexts/RadioContext';
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
@@ -25,37 +24,38 @@ const PlayerBar = ({ onNowPlayingToggle, nowPlayingOpen }: PlayerBarProps) => {
   } = useRadio();
   
   const navigate = useNavigate();
-  const [localVolume, setLocalVolume] = useState([contextVolume]);
+  const [localVolume, setLocalVolume] = useState(contextVolume);
   const [isMuted, setIsMuted] = useState(false);
   const [prevVolume, setPrevVolume] = useState(contextVolume);
   const [isHeartAnimating, setIsHeartAnimating] = useState(false);
   
   // Update local volume when context volume changes
   useEffect(() => {
-    setLocalVolume([contextVolume]);
+    setLocalVolume(contextVolume);
   }, [contextVolume]);
   
   // Function to handle volume change
   const handleVolumeChange = (newVolume: number[]) => {
-    setLocalVolume(newVolume);
-    setPrevVolume(newVolume[0]);
-    setIsMuted(newVolume[0] === 0);
+    const volumeValue = newVolume[0];
+    setLocalVolume(volumeValue);
+    setPrevVolume(volumeValue);
+    setIsMuted(volumeValue === 0);
     
     // Use the context's setAudioVolume function
-    setAudioVolume(newVolume[0]);
+    setAudioVolume(volumeValue);
   };
 
   // Toggle mute function
   const toggleMute = () => {
     if (isMuted) {
       // Unmute - restore previous volume
-      setLocalVolume([prevVolume]);
+      setLocalVolume(prevVolume);
       setIsMuted(false);
       setAudioVolume(prevVolume);
     } else {
       // Mute - set volume to 0
-      setPrevVolume(localVolume[0]);
-      setLocalVolume([0]);
+      setPrevVolume(localVolume);
+      setLocalVolume(0);
       setIsMuted(true);
       setAudioVolume(0);
     }
@@ -288,13 +288,82 @@ const PlayerBar = ({ onNowPlayingToggle, nowPlayingOpen }: PlayerBarProps) => {
             >
               {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
             </button>
-            <Slider 
-              value={localVolume}
-              onValueChange={handleVolumeChange}
-              max={100} 
-              step={1}
-              className="cursor-pointer"
-            />
+            <div className="flex-1">
+              <div 
+                className="relative w-full h-2 bg-gray-700 rounded-full cursor-pointer touch-action-none" 
+                onClick={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = e.clientX - rect.left;
+                  const percentage = Math.min(Math.max((x / rect.width) * 100, 0), 100);
+                  setLocalVolume(percentage);
+                  setAudioVolume(percentage);
+                  if (isMuted && percentage > 0) {
+                    setIsMuted(false);
+                  }
+                }}
+                onMouseDown={(e) => {
+                  const sliderEl = e.currentTarget;
+                  
+                  const handleMouseMove = (moveEvent: MouseEvent) => {
+                    const rect = sliderEl.getBoundingClientRect();
+                    const x = moveEvent.clientX - rect.left;
+                    const percentage = Math.min(Math.max((x / rect.width) * 100, 0), 100);
+                    setLocalVolume(percentage);
+                    setAudioVolume(percentage);
+                    if (isMuted && percentage > 0) {
+                      setIsMuted(false);
+                    }
+                  };
+                  
+                  const handleMouseUp = () => {
+                    document.removeEventListener('mousemove', handleMouseMove);
+                    document.removeEventListener('mouseup', handleMouseUp);
+                  };
+                  
+                  document.addEventListener('mousemove', handleMouseMove);
+                  document.addEventListener('mouseup', handleMouseUp);
+                }}
+                onTouchStart={(e) => {
+                  const sliderEl = e.currentTarget;
+                  
+                  const handleTouchMove = (touchEvent: TouchEvent) => {
+                    // Prevenir el desplazamiento de la página mientras se ajusta el volumen
+                    touchEvent.preventDefault();
+                    
+                    const touch = touchEvent.touches[0];
+                    const rect = sliderEl.getBoundingClientRect();
+                    const x = touch.clientX - rect.left;
+                    const percentage = Math.min(Math.max((x / rect.width) * 100, 0), 100);
+                    setLocalVolume(percentage);
+                    setAudioVolume(percentage);
+                    if (isMuted && percentage > 0) {
+                      setIsMuted(false);
+                    }
+                  };
+                  
+                  const handleTouchEnd = () => {
+                    document.removeEventListener('touchmove', handleTouchMove);
+                    document.removeEventListener('touchend', handleTouchEnd);
+                  };
+                  
+                  document.addEventListener('touchmove', handleTouchMove, { passive: false });
+                  document.addEventListener('touchend', handleTouchEnd);
+                }}
+              >
+                <div 
+                  className="absolute h-full bg-blue-600 rounded-full" 
+                  style={{ width: `${isMuted ? 0 : localVolume}%` }}
+                ></div>
+                <div 
+                  className="absolute h-5 w-5 rounded-full border-2 border-blue-600 bg-white" 
+                  style={{ 
+                    left: `${isMuted ? 0 : localVolume}%`, 
+                    top: '50%', 
+                    transform: 'translate(-50%, -50%)' 
+                  }}
+                ></div>
+              </div>
+            </div>
           </div>
           
           {/* Fullscreen button - hidden on small screens */}

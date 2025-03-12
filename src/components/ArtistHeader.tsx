@@ -1,5 +1,6 @@
 import { Heart, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
 
 interface ArtistHeaderProps {
   name: string;
@@ -9,16 +10,29 @@ interface ArtistHeaderProps {
 }
 
 const ArtistHeader = ({ name, image, followers = 0, verified = false }: ArtistHeaderProps) => {
+  // URL de imagen fija para el banner
+  const bannerImageUrl = "https://t4.ftcdn.net/jpg/12/64/59/37/360_F_1264593753_SPlhmPRJ4HqSBPMpUN7ai3ypwpx57KJZ.jpg";
+  const [bannerLoaded, setBannerLoaded] = useState(false);
+
+  useEffect(() => {
+    // Precargar la imagen del banner
+    const img = new Image();
+    img.src = bannerImageUrl;
+    img.onload = () => setBannerLoaded(true);
+  }, [bannerImageUrl]);
+  
   return (
-    <div className="w-full relative overflow-hidden animate-fade-in">
+    <div className="w-full relative overflow-hidden" style={{ minHeight: '300px' }}>
+      {/* Banner image */}
+      <img 
+        src={bannerImageUrl}
+        alt="Banner background"
+        className="absolute inset-0 w-full h-full object-cover opacity-50 blur-sm z-[-1]"
+        style={{ display: 'block' }}
+      />
+      
       {/* Background gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-app-darker/80 to-app-darkest z-0"></div>
-      
-      {/* Background image (blurred) */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center opacity-50 blur-sm z-[-1]" 
-        style={{ backgroundImage: `url(${image})` }}
-      ></div>
       
       {/* Artist info */}
       <div className="flex flex-col md:flex-row p-4 sm:p-6 md:p-8 pb-8 md:pb-12 relative z-10">

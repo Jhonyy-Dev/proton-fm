@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import News from "./pages/News";
 import NotFound from "./pages/NotFound";
 import Listen from "./pages/Listen";
+import Shows from "./pages/Shows";
 import { RadioProvider } from "./contexts/RadioContext";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/news" element={<News />} />
             <Route path="/listen" element={<Listen />} />
+            <Route path="/shows" element={<Shows />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

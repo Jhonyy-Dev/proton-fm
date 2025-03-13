@@ -1,0 +1,561 @@
+/* Estilos para el contenedor de la página */
+.shows-container {
+  padding: 20px;
+  min-height: 100vh;
+  background-color: #121212;
+  position: relative;
+}
+
+/* Estilos para el título de la página */
+.page-title {
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Estilos para el botón de volver */
+.back-button-container {
+  padding: 15px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+.back-button {
+  background-color: #e91e63;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  padding: 8px 16px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.back-button:hover {
+  background-color: #c2185b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.back-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+.back-button svg {
+  font-size: 14px;
+}
+
+/* Contenedor principal con layout flexbox */
+.shows-content {
+  display: flex;
+  height: calc(100vh - 150px);
+  background-color: rgba(20, 20, 20, 0.7);
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+/* Contenedor principal del reproductor (centro) */
+.main-player-container {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Estilos para el reproductor principal */
+.player-card {
+  width: 100%;
+  background-color: #1a1a1a;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 30px;
+  transition: all 0.3s ease;
+}
+
+.player-card:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Barra lateral de canales (derecha) */
+.channels-sidebar {
+  width: 300px;
+  background-color: rgba(30, 30, 30, 0.9);
+  border-left: 1px solid rgba(220, 53, 69, 0.5);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Estilos para las pestañas en la barra lateral */
+.content-tabs {
+  padding: 15px 15px 5px;
+  background-color: rgba(20, 20, 20, 0.8);
+  border-bottom: 1px solid rgba(220, 53, 69, 0.5);
+}
+
+.nav-pills {
+  display: flex;
+  justify-content: space-between;
+}
+
+.nav-pills .nav-link {
+  color: #f0f0f0;
+  background-color: rgba(40, 40, 40, 0.8);
+  border-radius: 20px;
+  padding: 8px 15px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  flex: 1;
+  text-align: center;
+  margin: 0 3px;
+}
+
+.nav-pills .nav-link:hover {
+  color: #ffffff;
+  background-color: rgba(220, 53, 69, 0.7);
+}
+
+.nav-pills .nav-link.active {
+  color: #ffffff;
+  background-color: #dc3545;
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgba(220, 53, 69, 0.4);
+}
+
+/* Lista de streams en la barra lateral */
+.streams-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: #dc3545 rgba(0, 0, 0, 0.2);
+}
+
+.streams-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.streams-list::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.streams-list::-webkit-scrollbar-thumb {
+  background-color: #dc3545;
+  border-radius: 10px;
+}
+
+.list-title {
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-align: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(220, 53, 69, 0.5);
+}
+
+/* Tarjetas de stream compactas */
+.stream-card {
+  margin-bottom: 8px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  background-color: rgba(40, 40, 40, 0.7);
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.stream-card:hover {
+  transform: translateY(-2px);
+  background-color: rgba(60, 60, 60, 0.9);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.stream-card.selected {
+  background-color: rgba(220, 53, 69, 0.25);
+  border-left: 3px solid #dc3545;
+  box-shadow: 0 0 10px rgba(220, 53, 69, 0.3);
+}
+
+.stream-card-content {
+  display: flex;
+  padding: 8px;
+  align-items: center;
+}
+
+.stream-thumbnail {
+  width: 70px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-right: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.stream-card-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.stream-card-info h5 {
+  font-size: 0.9rem;
+  margin-bottom: 3px;
+  color: #ffffff;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stream-card-info p {
+  font-size: 0.75rem;
+  margin-bottom: 2px;
+  color: #cccccc;
+}
+
+/* Indicador de transmisión en vivo */
+.live-icon {
+  color: #dc3545;
+  font-size: 0.6rem;
+  margin-right: 3px;
+  animation: pulse 1.5s infinite;
+}
+
+.live-text {
+  color: #dc3545;
+  font-weight: 700;
+  font-size: 0.7rem;
+  margin-right: 3px;
+}
+
+/* Reproductor de video */
+.video-container {
+  width: 100%;
+  position: relative;
+  background-color: #000;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.video-player {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: 70vh;
+}
+
+/* Overlay para información al pasar el cursor */
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.stream-hover-info {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 40%, rgba(0, 0, 0, 0.3) 70%, transparent 100%);
+  padding: 20px 30px 40px 30px;
+  color: white;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transform: translateY(-10px);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 15;
+}
+
+.player-card:hover .stream-hover-info {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.stream-hover-info h3 {
+  margin: 0 0 12px 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90%;
+}
+
+.stream-hover-info .stream-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.stream-hover-info .stream-genre,
+.stream-hover-info .stream-source,
+.stream-hover-info .stream-live {
+  display: inline-flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.15);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stream-hover-info .stream-source {
+  background: linear-gradient(135deg, rgba(233, 30, 99, 0.7), rgba(156, 39, 176, 0.7));
+  border: none;
+}
+
+.stream-hover-info .stream-live {
+  background: linear-gradient(135deg, rgba(244, 67, 54, 0.7), rgba(255, 87, 34, 0.7));
+  border: none;
+  animation: pulse 1.5s infinite;
+}
+
+.stream-hover-info .live-icon {
+  font-size: 0.7rem;
+  margin-right: 6px;
+  animation: pulse 1.5s infinite;
+}
+
+.stream-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.external-link-button {
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.external-link-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.external-link-button:active {
+  transform: translateY(0);
+}
+
+.external-link-button svg {
+  font-size: 14px;
+}
+
+/* Estilos para la información del stream */
+.stream-info {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.stream-info h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.stream-info p {
+  color: #ccc;
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+.stream-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.stream-genre, .stream-year {
+  background-color: #333;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.live-icon {
+  color: #f44336;
+  margin-right: 5px;
+  animation: pulse 1.5s infinite;
+}
+
+.live-text {
+  color: #f44336;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.rating-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rating-value {
+  color: #ffc107;
+  font-weight: bold;
+}
+
+.error-icon {
+  color: #f44336;
+  margin-right: 5px;
+}
+
+.player-error {
+  padding: 10px;
+  margin-top: 10px;
+}
+
+/* Mensaje cuando no hay stream seleccionado */
+.no-stream-selected {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  background-color: #1a1a1a;
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.no-stream-selected h3 {
+  color: #e0e0e0;
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+}
+
+.no-stream-selected p {
+  color: #999;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.no-stream-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #e0e0e0;
+  font-size: 1.2rem;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Ajustes para dispositivos móviles */
+@media (max-width: 992px) {
+  .shows-content {
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .channels-sidebar {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid rgba(220, 53, 69, 0.5);
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+    max-height: 300px;
+  }
+  
+  .main-player-container {
+    padding: 15px;
+  }
+  
+  .player-card, .no-stream-selected {
+    margin-bottom: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .shows-container {
+    padding: 10px;
+  }
+  
+  .page-title {
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+  }
+  
+  .stream-info h3 {
+    font-size: 1.2rem;
+  }
+  
+  .stream-info p {
+    font-size: 0.9rem;
+  }
+  
+  .no-stream-selected h3 {
+    font-size: 1.3rem;
+  }
+  
+  .no-stream-selected p {
+    font-size: 0.9rem;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
